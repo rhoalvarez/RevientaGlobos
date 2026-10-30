@@ -1,0 +1,16 @@
+{
+  "name": "globorush_camara",
+  "version": "1.0.0",
+  "description": "Juego web de reacción: se juega moviendo la mano delante de la cámara. La punta del dedo índice funciona como cursor y revienta globos al pasar por encima.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@mediapipe/tasks-vision": "^1.2.0"
+  }
+}

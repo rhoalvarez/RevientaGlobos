@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#101426">
+
+    <meta name="description"
+          content="GloboRush: un videojuego de movimiento que utiliza la cámara para reventar globos.">
+
+    <title>GloboRush — Juego con cámara</title>
+
+    <!-- HOJA DE ESTILOS -->
+    <link rel="stylesheet" href="./css/styles.css?v=2">
+
+</head>
+
+<body>
+
+    <main class="app-shell">
+
+        <!-- =========================
+             ENCABEZADO
+        ========================== -->
+
+        <header class="topbar">
+
+            <div class="brand-mark">GR</div>
+
+            <div class="brand-info">
+                <p class="eyebrow">ARCADE MOTION</p>
+                <h1>Globo<span>Rush</span></h1>
+            </div>
+
+            <div class="topbar-actions">
+
+                <button
+                    id="themeToggle"
+                    class="theme-btn"
+                    type="button"
+                    aria-label="Cambiar tema">
+
+                    ☀️ <span>Modo claro</span>
+
+                </button>
+
+                <div class="camera-pill">
+                    <i></i>
+                    <span id="cameraStatus">Cámara sin iniciar</span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- =========================
+             PANTALLA DE INICIO
+        ========================== -->
+
+        <section class="intro" id="intro">
+
+            <div class="intro-copy">
+
+                <p class="eyebrow">
+                    REACCIÓN · MOVIMIENTO · DIVERSIÓN
+                </p>
+
+                <h2>
+                    ¡Mové tu mano.<br>
+                    <span>Reventá globos!</span>
+                </h2>
+
+                <p>
+                    La cámara sigue la punta de tu dedo índice.
+                    Pasá la mano sobre los globos para explotarlos.
+                    No necesitás tocar la pantalla.
+                </p>
+
+                <div class="setup-row">
+
+                    <label for="playerName">
+                        Nombre del jugador
+
+                        <input
+                            id="playerName"
+                            type="text"
+                            maxlength="18"
+                            value="Jugador 1"
+                            autocomplete="off">
+                    </label>
+
+                    <label for="duration">
+                        Modalidad
+
+                        <select id="duration">
+
+                            <option value="15">
+                                ⚡ Relámpago · 15 segundos
+                            </option>
+
+                            <option value="20" selected>
+                                🔥 Adrenalina · 20 segundos
+                            </option>
+
+                            <option value="30">
+                                🎈 Clásico · 30 segundos
+                            </option>
+
+                        </select>
+                    </label>
+
+                </div>
+
+                <button
+                    class="primary-btn"
+                    id="startCameraBtn"
+                    type="button">
+
+                    Activar cámara y jugar <span>↗</span>
+
+                </button>
+
+                <p class="fine-print">
+                    La cámara se utiliza en tu navegador para detectar
+                    la mano. La imagen no se guarda.
+                </p>
+
+            </div>
+
+
+            <!-- DECORACIÓN -->
+
+            <div class="intro-art" aria-hidden="true">
+
+                <div class="orbit orbit-a"></div>
+                <div class="orbit orbit-b"></div>
+
+                <div class="art-balloon b1">●</div>
+                <div class="art-balloon b2">●</div>
+                <div class="art-balloon b3">●</div>
+                <div class="art-balloon b4">●</div>
+
+                <div class="art-star">✦</div>
+
+                <div class="art-label">
+                    MOVE<br>
+                    TO POP
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             PANTALLA DE JUEGO
+        ========================== -->
+
+        <section
+            class="game-section hidden"
+            id="gameSection">
+
+            <div class="game-toolbar">
+
+                <div class="stat-box">
+
+                    <span class="stat-label">JUGADOR</span>
+
+                    <strong id="activePlayer">
+                        Jugador 1
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-box score-box">
+
+                    <span class="stat-label">PUNTAJE</span>
+
+                    <strong id="score">
+                        0000
+                    </strong>
+
+                </div>
+
+
+                <div class="stat-box timer-box">
+
+                    <span class="stat-label">TIEMPO</span>
+
+                    <strong id="timer">
+                        20
+                    </strong>
+
+                </div>
+
+
+                <button
+                    class="ghost-btn"
+                    id="stopBtn"
+                    type="button">
+
+                    Terminar ronda
+
+                </button>
+
+            </div>
+
+
+            <!-- ÁREA DE JUEGO -->
+
+            <div class="play-area" id="playArea">
+
+                <video
+                    id="cameraVideo"
+                    autoplay
+                    playsinline
+                    muted>
+                </video>
+
+                <canvas id="gameCanvas"></canvas>
+
+
+                <div class="camera-overlay">
+
+                    <span class="live-dot"></span>
+
+                    CÁMARA EN VIVO
+
+                </div>
+
+
+                <div class="hand-hint" id="handHint">
+                    Mostrá una mano frente a la cámara
+                </div>
+
+
+                <div
+                    class="countdown hidden"
+                    id="countdown">
+
+                    3
+
+                </div>
+
+
+                <div
+                    class="round-message hidden"
+                    id="roundMessage">
+                </div>
+
+            </div>
+
+
+            <div class="game-help">
+
+                <span>✦</span>
+
+                Mové la punta del índice por encima de los globos.
+                Los globos de colores suman puntos;
+                los negros y rojos restan.
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             PANTALLA DE RESULTADOS
+        ========================== -->
+
+        <section
+            class="results hidden"
+            id="results">
+
+
+            <!-- RESULTADO DEL JUGADOR -->
+
+            <div class="result-card">
+
+                <p class="eyebrow">
+                    RONDA COMPLETADA
+                </p>
+
+                <h2 id="resultTitle">
+                    ¡Buen juego!
+                </h2>
+
+                <div
+                    class="result-score"
+                    id="finalScore">
+
+                    0
+
+                </div>
+
+                <p id="resultSummary">
+                    Puntaje final
+                </p>
+
+
+                <div class="result-actions">
+
+                    <button
+                        class="primary-btn"
+                        id="nextPlayerBtn"
+                        type="button">
+
+                        Jugar con el jugador 2 ↗
+
+                    </button>
+
+
+                    <button
+                        class="ghost-btn"
+                        id="replayBtn"
+                        type="button">
+
+                        Revancha
+
+                    </button>
+
+
+                    <button
+                        class="ghost-btn"
+                        id="homeBtn"
+                        type="button">
+
+                        Inicio
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 RANKING
+            ========================== -->
+
+            <aside class="ranking-card">
+
+                <div class="ranking-heading">
+
+                    <div>
+
+                        <p class="eyebrow">
+                            LOCAL
+                        </p>
+
+                        <h3>
+                            Mejores puntajes
+                        </h3>
+
+                    </div>
+
+
+                    <button
+                        id="clearRankingBtn"
+                        class="text-btn"
+                        type="button"
+                        title="Borrar todos los puntajes">
+
+                        <span class="trash-icon">♲</span>
+
+                        <span>Borrar ranking</span>
+
+                    </button>
+
+                </div>
+
+
+                <ol id="rankingList"></ol>
+
+
+                <p class="fine-print">
+                    Los resultados se guardan en este navegador.
+                </p>
+
+            </aside>
+
+        </section>
+
+
+        <!-- =========================
+             PIE DE PÁGINA
+        ========================== -->
+
+        <footer>
+
+            GLOBORUSH
+
+            <span>•</span>
+
+            Un juego de movimiento hecho para navegador
+
+        </footer>
+
+        <!-- VENTANA DE CONFIRMACIÓN -->
+<div class="modal-overlay hidden" id="deleteModal">
+
+    <div class="modal-card" role="dialog"
+         aria-modal="true"
+         aria-labelledby="modalTitle">
+
+        <div class="modal-icon">
+            🗑️
+        </div>
+
+        <h2 id="modalTitle">¿Borrar ranking?</h2>
+
+        <p>
+            ¿Estás segura de que querés eliminar todos los puntajes?
+            Esta acción no se puede deshacer.
+        </p>
+
+        <div class="modal-actions">
+
+            <button
+                id="cancelDelete"
+                class="modal-cancel"
+                type="button">
+                Cancelar
+            </button>
+
+            <button
+                id="confirmDelete"
+                class="modal-delete"
+                type="button">
+                Sí, borrar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+    </main>
+
+
+    <!-- JAVASCRIPT PRINCIPAL -->
+
+    <script
+        type="module"
+        src="./js/main.js">
+    </script>
+
+</body>
+
+</html>
